@@ -21,14 +21,22 @@ def parse_args():
     parser.add_argument("--birth-city", required=True, type=str)
     parser.add_argument("--address", required=True, type=str, help="Address")
     parser.add_argument("--current-city", required=True, type=str, help="Postcode City")
-    parser.add_argument("--leave-date", required=True, type=str, help="DD/MM/YYYY")
-    parser.add_argument("--leave-hour", required=True, type=str, help="HH:MM")
+    parser.add_argument("--leave-date", required=False, type=str, help="DD/MM/YYYY")
+    parser.add_argument("--leave-hour", required=False, type=str, help="HH:MM")
     parser.add_argument("--motifs", required=True, type=str, help="- delimited: travail-achats-sante-famille-handicap-sport_animaux-convocation-missions-enfants")
 
     return parser.parse_args()
 
 
 args = parse_args()
+
+if args.leave_date is None:
+    args.leave_date=datetime.datetime.now().strftime('%d/%m/%Y')
+if args.leave_hour is None:
+    theTime = datetime.datetime.now() - datetime.timedelta(minutes = 5)
+    args.leave_hour=theTime.strftime('%Hh%M')
+    
+
 print("Args:", args)
 
 # ---------------------------
