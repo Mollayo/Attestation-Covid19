@@ -3,11 +3,10 @@ import qrcode
 import datetime
 from PIL import ImageFont
 from PIL import ImageDraw
-import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
-
 import argparse
+import os
 
 
 # Motifs
@@ -24,18 +23,18 @@ def parse_args():
     parser.add_argument("--leave-date", required=False, type=str, help="DD/MM/YYYY")
     parser.add_argument("--leave-hour", required=False, type=str, help="HH:MM")
     parser.add_argument("--motifs", required=True, type=str, help="- delimited: travail-achats-sante-famille-handicap-sport_animaux-convocation-missions-enfants")
-
+    parser.add_argument("--output", required=False, type=str, help="specify the output file")
     return parser.parse_args()
 
 
 args = parse_args()
 
-if args.leave_date is None:
-    args.leave_date=datetime.datetime.now().strftime('%d/%m/%Y')
-if args.leave_hour is None:
-    theTime = datetime.datetime.now() - datetime.timedelta(minutes = 5)
+theTime = datetime.datetime.now()
+if args.leave_date is None or args.leave_hour is None:
+    args.leave_date=theTime.strftime('%d/%m/%Y')
     args.leave_hour=theTime.strftime('%Hh%M')
-    
+if args.output is None:
+    args.output='attestation.pdf'
 
 print("Args:", args)
 
@@ -81,7 +80,7 @@ if "enfants" in args.motifs:
     img_array[1292:1322, 157:187] = cross
 
 # QR CODE
-qr_text = f"Cree le: {datetime.datetime.now().strftime('%d/%m/%Y a %Hh%M')};\n" \
+qr_text = f"Cree le: {theTime.strftime('%d/%m/%Y a %Hh%M')};\n" \
           f" Nom: {args.last_name};\n" \
           f" Prenom: {args.first_name};\n" \
           f" Naissance: {args.birth_date} a {args.birth_city};\n" \
@@ -89,7 +88,7 @@ qr_text = f"Cree le: {datetime.datetime.now().strftime('%d/%m/%Y a %Hh%M')};\n" 
           f" Sortie: {args.leave_date} a {args.leave_hour};\n" \
           f" Motifs: {args.motifs}"
 
-# qr_text="hyduzqhdzoiqd zqoihdpodqz"
+
 qr = qrcode.make(qr_text, border=0)
 qr = qr.resize((200, 200))
 qr = np.array(qr).astype(np.uint8) * 255
@@ -117,18 +116,20 @@ draw.text((190, 1415), datetime.datetime.now().strftime("%d/%m/%Y"), (0, 0, 0), 
 draw.text((500, 1415), datetime.datetime.now().strftime("%Hh%M"), (0, 0, 0), font=font)
 
 
-plt.imsave("output-1.pdf", np.array(img), format="pdf")
+img.save("output-1.pdf", save_all=False, resolution=150)
 
 # ---------------------------
 #  Second Page (Big QR code)
 # ---------------------------
-img = np.array(Image.open('input-page2.png'))
-img[:] = 255
+img_array = np.array(Image.open('input-page2.png'))
+img_array[:] = 255
 qr = Image.fromarray(qr)
 qr = qr.resize((qr.size[0] * 3, qr.size[1] * 3))
 qr = np.array(qr)
-img[113:113 + qr.shape[0], 113:113 + qr.shape[1]] = qr
-plt.imsave("output-2.pdf", img, format="pdf")
+img_array[113:113 + qr.shape[0], 113:113 + qr.shape[1]] = qr
+#plt.imsave("output-2.pdf", img, format="pdf")
+img = Image.fromarray(img_array)
+img.save("output-2.pdf", save_all=False, resolution=150)
 
 # --------------------
 # Merge PDFs
@@ -138,4 +139,6 @@ pdf2 = PdfFileReader('output-2.pdf')
 writer = PdfFileWriter()
 writer.addPage(pdf1.getPage(0))
 writer.addPage(pdf2.getPage(0))
-writer.write(open("attestation.pdf", "wb"))
+writer.write(open(args.output, "wb"))
+os.remove('output-1.pdf')
+os.remove('output-2.pdf')
