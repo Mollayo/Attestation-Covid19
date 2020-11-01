@@ -7,6 +7,8 @@ python attestation.py --first-name Bob --last-name Lechobin --birth-date 11/07/1
 
 Si les paramètres leave-date et leave-hour ne sont pas donnés, le script sélectionne la date et l'heure actuelle moins 5 minutes.
 
+Le nom du fichier généré est "attestation.pdf".
+
 Le code "python attestation.py" permet d'afficher l'aide pour l'utilisation de ce script.
 
 Version initiale du projet: https://github.com/tdopierre/AttestationNumeriqueCOVID-19
