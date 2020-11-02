@@ -19,7 +19,8 @@ def parse_args():
     parser.add_argument("--birth-date", required=True, type=str, help="DD/MM/YYYY")
     parser.add_argument("--birth-city", required=True, type=str)
     parser.add_argument("--address", required=True, type=str, help="Address")
-    parser.add_argument("--current-city", required=True, type=str, help="Postcode City")
+    parser.add_argument("--current-postcode", required=True, type=str, help="Postcode")
+    parser.add_argument("--current-city", required=True, type=str, help="Postcode")
     parser.add_argument("--leave-date", required=False, type=str, help="DD/MM/YYYY")
     parser.add_argument("--leave-hour", required=False, type=str, help="HH:MM")
     parser.add_argument("--motifs", required=True, type=str, help="- delimited: travail-achats-sante-famille-handicap-sport_animaux-convocation-missions-enfants")
@@ -84,7 +85,7 @@ qr_text = f"Cree le: {theTime.strftime('%d/%m/%Y a %Hh%M')};\n" \
           f" Nom: {args.last_name};\n" \
           f" Prenom: {args.first_name};\n" \
           f" Naissance: {args.birth_date} a {args.birth_city};\n" \
-          f" Adresse: {args.address} {args.current_city};\n" \
+          f" Adresse: {args.address} {args.current_postcode} {args.current_city};\n" \
           f" Sortie: {args.leave_date} a {args.leave_hour};\n" \
           f" Motifs: {args.motifs}"
 
@@ -109,7 +110,7 @@ draw.text((260, 285), f'{args.first_name} {args.last_name}', (0, 0, 0), font=fon
 draw.text((255, 331), f'{args.birth_date}', (0, 0, 0), font=font)
 # 190, 407
 draw.text((628, 331), f"{args.birth_city}", (0, 0, 0), font=font)
-draw.text((280, 376), f"{args.address}", (0, 0, 0), font=font)
+draw.text((280, 376), f"{args.address} {args.current_postcode} {args.current_city}", (0, 0, 0), font=font)
 
 draw.text((228, 1370), f"{args.current_city}", (0, 0, 0), font=font)
 draw.text((190, 1415), datetime.datetime.now().strftime("%d/%m/%Y"), (0, 0, 0), font=font)
