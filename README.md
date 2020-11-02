@@ -5,7 +5,7 @@ Un script python pour générer les attestations pour le Covid-19. Ce script peu
 Un exemple d'utilisation:
 python attestation.py --first-name Bob --last-name Lechobin --birth-date 11/07/1984 --birth-city Paris --address "15 rue de la Melasse" --current-city "Lyon" --current-postcode 69000 --leave-date 01/11/2020 --leave-hour 11:27 --motif achats
 
-Si les paramètres leave-date et leave-hour ne sont pas donnés, le script sélectionne la date et l'heure actuelle moins 5 minutes.
+Si les paramètres leave-date et leave-hour ne sont pas donnés, le script sélectionne la date et l'heure actuelle.
 
 Le nom du fichier généré est "attestation.pdf".
 
